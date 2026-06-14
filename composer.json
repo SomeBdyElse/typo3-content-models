@@ -1,0 +1,27 @@
+{
+  "name": "somebdyelse/typo3-content-models",
+  "description": "TYPO3 Content Models",
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "content_models"
+    }
+  },
+  "keywords": ["typo3", "extension", "composer.json"],
+  "authors": [
+    {
+      "name": "Hannes Lau",
+      "email": "office@hanneslau.de"
+    }
+  ],
+  "license": "GPL-2.0+",
+  "type": "typo3-cms-extension",
+  "require": {
+    "typo3/cms-core": "^v13.4.0",
+    "nette/php-generator": "^4.2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SomeBdyElse\\Typo3ContentModels\\": "Classes/"
+    }
+  }
+}

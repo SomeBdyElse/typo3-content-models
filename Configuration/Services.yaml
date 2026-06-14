@@ -1,0 +1,28 @@
+services:
+  _defaults:
+    autowire: true
+
+  SomeBdyElse\Typo3ContentModels\:
+    resource: '../Classes/*'
+
+  SomeBdyElse\Typo3ContentModels\Generation\Configuration:
+    factory: ['@SomeBdyElse\Typo3ContentModels\Generation\ConfigurationFactory', 'create']
+
+  SomeBdyElse\Typo3ContentModels\Generation\DefaultGenerator:
+    public: true
+    
+  SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand:
+    public: true
+    autowire: true
+    tags:
+      - name: 'console.command'
+        command: 'content-models:generate_models'
+
+  SomeBdyElse\Typo3ContentModels\Rendering\PageContentWrapper:
+    tags:
+      - name: event.listener
+        method: __invoke
+
+  SomeBdyElse\Typo3ContentModels\Rendering\PageFetchingProcessor:
+    tags:
+      - { name: 'data.processor', identifier: 'page' }
