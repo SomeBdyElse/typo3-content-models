@@ -7,7 +7,6 @@ namespace SomeBdyElse\Typo3ContentModels\Generation;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\Utils\Type;
-use SomeBdyElse\Typo3ContentModels\Contract\ContentModelFactoryInterface;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelRegistryInterface;
 use TYPO3\CMS\Core\Collection\LazyRecordCollection;
@@ -142,7 +141,6 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
     {
         $this->generateContentModelAttribute();
         $this->generateContentModelRegistry($generatedModels);
-        $this->generateContentModelFactory();
     }
 
     protected function generateContentModelAttribute(): void
@@ -214,47 +212,6 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
         $all->setBody("return \$this->modelClassNamesByTableAndType;");
 
         $this->writePhpFile('ContentModelRegistry.php', $namespace);
-    }
-
-    protected function generateContentModelFactory(): void
-    {
-        $namespace = new PhpNamespace($this->configuration->targetPhpNamespace);
-        $namespace->addUse(ContentModelFactoryInterface::class);
-        $namespace->addUse(Record::class);
-
-        $factory = $namespace->addClass('ContentModelFactory');
-        $factory->setFinal();
-        $factory->addImplement(ContentModelFactoryInterface::class);
-        $registryProperty = $factory->addProperty('registry');
-        $registryProperty->setPrivate();
-        $registryProperty->setReadOnly();
-        $registryProperty->setType($this->configuration->targetPhpNamespace . '\\ContentModelRegistry');
-
-        $constructor = $factory->addMethod('__construct');
-        $registryParameter = $constructor->addParameter('registry');
-        $registryParameter->setNullable();
-        $registryParameter->setType($this->configuration->targetPhpNamespace . '\\ContentModelRegistry');
-        $registryParameter->setDefaultValue(null);
-        $constructor->setBody("\$this->registry = \$registry ?? new ContentModelRegistry();");
-
-        $invoke = $factory->addMethod('__invoke');
-        $invoke->setPublic();
-        $invoke->setReturnType(ContentModelInterface::class);
-        $invoke->addParameter('record')->setType(Record::class);
-        $invoke->setBody(<<<'PHP'
-            $modelClassName = $this->registry->getModelClassName($record->getMainType(), $record->getRecordType());
-            if ($modelClassName === null || !method_exists($modelClassName, 'fromRecord')) {
-                throw new \UnexpectedValueException(sprintf(
-                    'No generated content model found for table "%s" and type "%s".',
-                    $record->getMainType(),
-                    $record->getRecordType(),
-                ));
-            }
-
-            return $modelClassName::fromRecord($record);
-            PHP);
-
-        $this->writePhpFile('ContentModelFactory.php', $namespace);
     }
 
     protected function writePhpFile(string $filename, PhpNamespace $namespace): void

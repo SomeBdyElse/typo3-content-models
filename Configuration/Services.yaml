@@ -26,3 +26,6 @@ services:
   SomeBdyElse\Typo3ContentModels\Rendering\PageFetchingProcessor:
     tags:
       - { name: 'data.processor', identifier: 'page' }
+
+  SomeBdyElse\Typo3ContentModels\Contract\ContentModelFactoryInterface:
+    alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelFactory
