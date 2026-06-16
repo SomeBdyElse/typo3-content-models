@@ -12,6 +12,8 @@ readonly class Configuration
         public string $targetPhpNamespace,
         string $targetDirectory,
         public bool $generateComposerJson,
+        /** @param $overrides array<string, array<string, OverrideConfiguration> */
+        public array $overrides,
     ) {
         $this->targetDirectory = rtrim($targetDirectory, '/');
     }

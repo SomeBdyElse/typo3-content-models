@@ -10,6 +10,7 @@ class GenerationService
     public function __construct(
         protected TcaSchemaFactory $schemaFactory,
         protected GeneratorFactory $generatorFactory,
+        protected Configuration $configuration,
     ) {
     }
 
@@ -28,6 +29,10 @@ class GenerationService
         foreach ($schemata as $tableName => $tableSchema) {
             $subSchemata = $tableSchema->getSubSchemata();
             foreach ($subSchemata as $type => $subSchema) {
+                $generate = ($this->configuration->overrides[$tableName][$type] ?? null)?->generate ?? true;
+                if (!$generate) {
+                    continue;
+                }
                 $generator = $this->generatorFactory->getContentModelGenerator($tableName, $type);
                 $generatedModels[] = $generator->generateModel($tableName, $type);
             }

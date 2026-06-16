@@ -34,6 +34,11 @@ final readonly class ConfigurationFactory
                 'generateComposerJson',
                 false,
             ),
+            overrides: $this->getArraySetting(
+                $settings,
+                'overrides',
+                [],
+            )
         );
     }
 
@@ -53,5 +58,17 @@ final readonly class ConfigurationFactory
     {
         $value = $settings[$key] ?? $default;
         return filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? $default;
+    }
+
+    /**
+     * @param array<string, mixed> $settings
+     */
+    private function getArraySetting(array $settings, string $key, array $default): array
+    {
+        $value = $settings[$key] ?? $default;
+        if (!is_array($value)) {
+            throw new \RuntimeException("$key must be an array");
+        }
+        return $value;
     }
 }

@@ -47,7 +47,9 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
         $modelNamespace->addUse($contentModelInterface);
         $modelNamespace->addUse($contentModelAttribute);
         $modelNamespace->addUse(Record::class);
-        $className = $this->namingHelper->classNameForType($table, $type);
+
+        $classNameOverride = $this->configuration->overrides[$table][$type]?->className;
+        $className = $classNameOverride ?? $this->namingHelper->classNameForType($table, $type);
         $model = $modelNamespace->addClass($className);
         $model->addAttribute(ltrim($contentModelAttribute, '\\'), [
             'table' => $table,
