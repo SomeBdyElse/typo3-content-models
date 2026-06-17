@@ -9,6 +9,7 @@ use Nette\PhpGenerator\PhpNamespace;
 use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
+use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
 use TYPO3\CMS\Core\Collection\LazyRecordCollection;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;

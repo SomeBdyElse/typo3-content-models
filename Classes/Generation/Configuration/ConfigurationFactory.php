@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace SomeBdyElse\Typo3ContentModels\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
+use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
+use SomeBdyElse\Typo3ContentModels\Generation\GeneratorFactory;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 
 final readonly class ConfigurationFactory

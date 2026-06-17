@@ -2,6 +2,7 @@
 
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
+use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
 use TYPO3\CMS\Core\Schema\SchemaCollection;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 

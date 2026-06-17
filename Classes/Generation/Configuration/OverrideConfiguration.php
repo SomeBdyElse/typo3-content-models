@@ -1,6 +1,6 @@
 <?php
 
-namespace SomeBdyElse\Typo3ContentModels\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
 readonly class OverrideConfiguration
 {

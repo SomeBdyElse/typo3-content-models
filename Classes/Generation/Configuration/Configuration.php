@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SomeBdyElse\Typo3ContentModels\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
 readonly class Configuration
 {
