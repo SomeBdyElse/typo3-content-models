@@ -10,7 +10,7 @@ use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
-use TYPO3\CMS\Core\Collection\LazyRecordCollection;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerResolver;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
@@ -23,7 +23,7 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
 {
     public function __construct(
         protected NamingHelper $namingHelper,
-        protected TypeResolver $typeResolver,
+        protected HandlerResolver $fieldHandlerResolver,
         protected TcaSchemaFactory $schemaFactory,
         protected Configuration $configuration,
     ) {
@@ -66,21 +66,23 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
             if ($field->getConfiguration()['type'] === 'none') {
                 continue;
             }
-            $fieldName = $field->getName();
+            $generatedField = $this->fieldHandlerResolver->generate($table, $type, $subSchema, $field);
+            foreach ($generatedField->uses as $use) {
+                $modelNamespace->addUse($use);
+            }
+
+            $fieldName = $generatedField->name;
             $parameter = $constructor->addPromotedParameter($fieldName);
             $parameter->setPublic();
             $parameter->setReadOnly();
-            $parameterType = Type::fromString($this->typeResolver->getTypeForField($table, $type, $subSchema, $field));
+            $parameterType = Type::fromString($generatedField->nativeType);
             if ($parameterType->isClass()) {
                 $modelNamespace->addUse(\Nette\PhpGenerator\Type::nullable((string)$parameterType, false));
             }
             
             $parameter->setType((string) $parameterType);
 
-            $nullFallback = $parameterType->getSingleName() === LazyRecordCollection::class ? ' new \\' . LazyRecordCollection::class . '(null, fn() => [])' : null;
-            $nullFallbackString = isset($nullFallback) ? " ?? {$nullFallback}" : '';
-
-            $staticBody .= "\$arguments['{$fieldName}'] = \$record->get('{$fieldName}'){$nullFallbackString};\n";
+            $staticBody .= "\$arguments['{$fieldName}'] = {$generatedField->fromRecordExpression};\n";
         }
         $fullClassName = "\\{$nameSpace}\\{$className}";
         $staticBody .= "return new self(...\$arguments);";

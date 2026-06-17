@@ -9,8 +9,19 @@ services:
       - '../Classes/Contract/ContentModel.php'
       - '../Classes/Rendering/DependencyInjection'
 
-  SomeBdyElse\Typo3ContentModels\Generation\Configuration:
-    factory: ['@SomeBdyElse\Typo3ContentModels\Generation\ConfigurationFactory', 'create']
+  SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration:
+    factory: ['@SomeBdyElse\Typo3ContentModels\Generation\Configuration\ConfigurationFactory', 'create']
+
+  SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerResolver:
+    arguments:
+      $handlers:
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\File'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Relation'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\RecordPropertyClosure'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\StaticSelect'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\DateTime'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Link'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Fallback'
 
   SomeBdyElse\Typo3ContentModels\Generation\DefaultGenerator:
     public: true
