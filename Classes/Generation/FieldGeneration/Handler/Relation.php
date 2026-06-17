@@ -6,6 +6,7 @@ namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler;
 
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
+use SomeBdyElse\Typo3ContentModels\Generation\Configuration\FieldOverrideConfiguration;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\NamingHelper;
@@ -39,7 +40,7 @@ final readonly class Relation implements HandlerInterface
         FieldTypeInterface $field,
     ): GeneratedField {
         $fieldName = $field->getName();
-        $targetItemClassNames = $this->resolveItemClassNames($field);
+        $targetItemClassNames = $this->resolveItemClassNames($table, $type, $field);
         $targetItemClassReference = $this->classReference($targetItemClassNames);
         $recordCollectionFallback = 'new \\' . LazyRecordCollection::class . '(null, fn() => [])';
 
@@ -83,13 +84,14 @@ final readonly class Relation implements HandlerInterface
     /**
      * @return non-empty-list<class-string<ContentModelInterface>|class-string<Record>>
      */
-    private function resolveItemClassNames(FieldTypeInterface $field): array
+    private function resolveItemClassNames(string $table, ?string $type, FieldTypeInterface $field): array
     {
         $targetTables = $this->resolveTargetTables($field);
         if ($targetTables === []) {
             return [Record::class];
         }
 
+        $fieldOverride = ($this->configuration->overrides[$table][$type] ?? null)?->fields[$field->getName()] ?? null;
         $itemClassNames = [];
         foreach ($targetTables as $targetTable) {
             try {
@@ -101,6 +103,10 @@ final readonly class Relation implements HandlerInterface
 
             $targetModelClassNames = [];
             foreach ($targetSchema->getSubSchemata() as $targetType => $targetSubSchema) {
+                if (!$this->allowsTargetType($fieldOverride, $targetTable, (string)$targetType)) {
+                    continue;
+                }
+
                 $generate = ($this->configuration->overrides[$targetTable][$targetType] ?? null)?->generate ?? true;
                 if (!$generate) {
                     continue;
@@ -124,6 +130,19 @@ final readonly class Relation implements HandlerInterface
         }
 
         return array_values(array_unique($itemClassNames));
+    }
+
+    private function allowsTargetType(?FieldOverrideConfiguration $fieldOverride, string $targetTable, string $targetType): bool
+    {
+        if ($fieldOverride === null || $fieldOverride->relationTargetTypes === []) {
+            return true;
+        }
+
+        if (!array_key_exists($targetTable, $fieldOverride->relationTargetTypes)) {
+            return true;
+        }
+
+        return in_array($targetType, array_map('strval', $fieldOverride->relationTargetTypes[$targetTable]), true);
     }
 
     /**
