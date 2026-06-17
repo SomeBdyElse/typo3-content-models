@@ -17,6 +17,7 @@ services:
       $handlers:
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\File'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Relation'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\RelationFallback'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\RecordPropertyClosure'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\StaticSelect'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\DateTime'
@@ -40,6 +41,7 @@ services:
 
   SomeBdyElse\Typo3ContentModels\Contract\ContentModelFactoryInterface:
     alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelFactory
+    public: true
 
   SomeBdyElse\Typo3ContentModels\Contract\ContentModelRegistryInterface:
     alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelRegistry

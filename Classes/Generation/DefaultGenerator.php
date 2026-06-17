@@ -75,6 +75,9 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
             $parameter = $constructor->addPromotedParameter($fieldName);
             $parameter->setPublic();
             $parameter->setReadOnly();
+            if ($generatedField->phpDocType !== null) {
+                $parameter->setComment('@var ' . $generatedField->phpDocType);
+            }
             $parameterType = Type::fromString($generatedField->nativeType);
             if ($parameterType->isClass()) {
                 $modelNamespace->addUse(\Nette\PhpGenerator\Type::nullable((string)$parameterType, false));
