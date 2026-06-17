@@ -1,9 +1,13 @@
 services:
   _defaults:
     autowire: true
+    autoconfigure: true
 
   SomeBdyElse\Typo3ContentModels\:
     resource: '../Classes/*'
+    exclude:
+      - '../Classes/Contract/ContentModel.php'
+      - '../Classes/Rendering/DependencyInjection'
 
   SomeBdyElse\Typo3ContentModels\Generation\Configuration:
     factory: ['@SomeBdyElse\Typo3ContentModels\Generation\ConfigurationFactory', 'create']
@@ -13,10 +17,6 @@ services:
     
   SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand:
     public: true
-    autowire: true
-    tags:
-      - name: 'console.command'
-        command: 'content-models:generate_models'
 
   SomeBdyElse\Typo3ContentModels\Rendering\PageContentWrapper:
     tags:
@@ -29,3 +29,6 @@ services:
 
   SomeBdyElse\Typo3ContentModels\Contract\ContentModelFactoryInterface:
     alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelFactory
+
+  SomeBdyElse\Typo3ContentModels\Contract\ContentModelRegistryInterface:
+    alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelRegistry

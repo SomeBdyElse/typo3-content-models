@@ -7,8 +7,8 @@ namespace SomeBdyElse\Typo3ContentModels\Generation;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\Utils\Type;
+use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
-use SomeBdyElse\Typo3ContentModels\Contract\ContentModelRegistryInterface;
 use TYPO3\CMS\Core\Collection\LazyRecordCollection;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
@@ -43,15 +43,14 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
 
         $modelNamespace = new PhpNamespace($nameSpace);
         $contentModelInterface = ContentModelInterface::class;
-        $contentModelAttribute = '\\' . $this->configuration->targetPhpNamespace . '\\ContentModel';
         $modelNamespace->addUse($contentModelInterface);
-        $modelNamespace->addUse($contentModelAttribute);
+        $modelNamespace->addUse(ContentModel::class);
         $modelNamespace->addUse(Record::class);
 
         $classNameOverride = $this->configuration->overrides[$table][$type]?->className;
         $className = $classNameOverride ?? $this->namingHelper->classNameForType($table, $type);
         $model = $modelNamespace->addClass($className);
-        $model->addAttribute(ltrim($contentModelAttribute, '\\'), [
+        $model->addAttribute(ContentModel::class, [
             'table' => $table,
             'type' => $type,
         ]);
@@ -141,88 +140,5 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
      */
     public function generateCommonCode(array $generatedModels = []): void
     {
-        $this->generateContentModelAttribute();
-        $this->generateContentModelRegistry($generatedModels);
-    }
-
-    protected function generateContentModelAttribute(): void
-    {
-        $namespace = new PhpNamespace($this->configuration->targetPhpNamespace);
-        $namespace->addUse(\Attribute::class);
-        $attribute = $namespace->addClass('ContentModel');
-        $attribute->setFinal();
-        $attribute->setReadOnly();
-        $attribute->addAttribute(\Attribute::class);
-        $constructor = $attribute->addMethod('__construct');
-        $constructor->addPromotedParameter('table')
-            ->setPublic()
-            ->setType('string');
-        $constructor->addPromotedParameter('type')
-            ->setPublic()
-            ->setNullable()
-            ->setType('string');
-
-        $this->writePhpFile('ContentModel.php', $namespace);
-    }
-
-    /**
-     * @param list<GeneratedModel> $generatedModels
-     */
-    protected function generateContentModelRegistry(array $generatedModels): void
-    {
-        $modelMap = [];
-        foreach ($generatedModels as $generatedModel) {
-            $modelMap[$generatedModel->table][(string) $generatedModel->type] = $generatedModel->className;
-        }
-        ksort($modelMap);
-        foreach ($modelMap as &$modelsByType) {
-            ksort($modelsByType);
-        }
-        unset($modelsByType);
-
-        $namespace = new PhpNamespace($this->configuration->targetPhpNamespace);
-        $namespace->addUse(ContentModelRegistryInterface::class);
-        $registry = $namespace->addClass('ContentModelRegistry');
-        $registry->setFinal();
-        $registry->addImplement(ContentModelRegistryInterface::class);
-
-        $property = $registry->addProperty('modelClassNamesByTableAndType', $modelMap);
-        $property->setPrivate();
-        $property->setType('array');
-
-        $getModelClassName = $registry->addMethod('getModelClassName');
-        $getModelClassName->setPublic();
-        $getModelClassName->setReturnType('?string');
-        $getModelClassName->addParameter('table')->setType('string');
-        $getModelClassName->addParameter('type')->setNullable()->setType('string');
-        $getModelClassName->setBody("return \$this->modelClassNamesByTableAndType[\$table][(string) \$type] ?? null;");
-
-        $getContentModel = $registry->addMethod('getContentModel');
-        $getContentModel->setPublic();
-        $getContentModel->setReturnType($this->configuration->targetPhpNamespace . '\\ContentModel');
-        $getContentModel->setReturnNullable();
-        $getContentModel->addParameter('className')->setType('string');
-        $getContentModel->setBody(<<<'PHP'
-            $attributes = (new \ReflectionClass($className))->getAttributes(ContentModel::class);
-
-            return $attributes === [] ? null : $attributes[0]->newInstance();
-            PHP);
-
-        $all = $registry->addMethod('all');
-        $all->setPublic();
-        $all->setReturnType('array');
-        $all->setBody("return \$this->modelClassNamesByTableAndType;");
-
-        $this->writePhpFile('ContentModelRegistry.php', $namespace);
-    }
-
-    protected function writePhpFile(string $filename, PhpNamespace $namespace): void
-    {
-        $directory = GeneralUtility::getFileAbsFileName($this->configuration->targetDirectory);
-        GeneralUtility::mkdir_deep($directory);
-        $file = new PhpFile();
-        $file->addNamespace($namespace);
-        $path = $directory . '/' . $filename;
-        file_put_contents($path, $file);
     }
 }
