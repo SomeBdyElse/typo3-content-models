@@ -19,6 +19,7 @@ services:
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Relation'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\RelationFallback'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\RecordPropertyClosure'
+        - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\StaticSelectSingleEnum'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\StaticSelect'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\DateTime'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Link'
