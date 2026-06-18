@@ -58,6 +58,9 @@ final class LazyContentModelCollection implements \IteratorAggregate, \ArrayAcce
         return count($this->records);
     }
 
+    /**
+     * @return \Traversable<int|string, TItem>
+     */
     public function getIterator(): \Traversable
     {
         foreach ($this->records as $offset => $record) {
@@ -75,6 +78,9 @@ final class LazyContentModelCollection implements \IteratorAggregate, \ArrayAcce
         return $this->records->offsetExists($offset);
     }
 
+    /**
+     * @return TItem|null
+     */
     public function offsetGet(mixed $offset): ContentModelInterface|Record|null
     {
         $record = $this->records->offsetGet($offset);
