@@ -91,34 +91,21 @@ final readonly class Relation implements HandlerInterface
             return [Record::class];
         }
 
-        $fieldOverride = ($this->configuration->overrides[$table][$type] ?? null)?->fields[$field->getName()] ?? null;
+        $fieldOverride = $this->configuration->getFieldOverride($table, $type, $field->getName());
         $itemClassNames = [];
         foreach ($targetTables as $targetTable) {
-            try {
-                $targetSchema = $this->schemaFactory->get($targetTable);
-            } catch (\Throwable) {
+            $targets = $this->resolveTargets($targetTable, $fieldOverride);
+            if ($targets === []) {
                 $itemClassNames[] = Record::class;
                 continue;
             }
 
             $targetModelClassNames = [];
-            foreach ($targetSchema->getSubSchemata() as $targetType => $targetSubSchema) {
-                if (!$this->allowsTargetType($fieldOverride, $targetTable, (string)$targetType)) {
-                    continue;
+            foreach ($targets as ['table' => $targetTableName, 'type' => $targetType]) {
+                $targetModelClassName = $this->resolveTargetModelClassName($targetTableName, $targetType);
+                if ($targetModelClassName !== null) {
+                    $targetModelClassNames[] = $targetModelClassName;
                 }
-
-                $generate = ($this->configuration->overrides[$targetTable][$targetType] ?? null)?->generate ?? true;
-                if (!$generate) {
-                    continue;
-                }
-
-                $className = ($this->configuration->overrides[$targetTable][$targetType] ?? null)?->className
-                    ?? $this->namingHelper->classNameForType($targetTable, (string)$targetType);
-
-                $targetModelClassNames[] = $this->namingHelper->namespaceForTable(
-                    $this->configuration->targetPhpNamespace,
-                    $targetTable,
-                ) . '\\' . $className;
             }
 
             if ($targetModelClassNames === []) {
@@ -132,17 +119,50 @@ final readonly class Relation implements HandlerInterface
         return array_values(array_unique($itemClassNames));
     }
 
-    private function allowsTargetType(?FieldOverrideConfiguration $fieldOverride, string $targetTable, string $targetType): bool
+    /**
+     * @return list<array{table: string, type: ?string}>
+     */
+    private function resolveTargets(string $targetTable, ?FieldOverrideConfiguration $fieldOverride): array
     {
-        if ($fieldOverride === null || $fieldOverride->relationTargetTypes === []) {
-            return true;
+        if ($fieldOverride !== null && array_key_exists($targetTable, $fieldOverride->relationTargetTypes)) {
+            return array_map(
+                static fn (string|int $type): array => ['table' => $targetTable, 'type' => (string)$type],
+                $fieldOverride->relationTargetTypes[$targetTable],
+            );
         }
 
-        if (!array_key_exists($targetTable, $fieldOverride->relationTargetTypes)) {
-            return true;
+        try {
+            $targetSchema = $this->schemaFactory->get($targetTable);
+        } catch (\Throwable) {
+            return [];
         }
 
-        return in_array($targetType, array_map('strval', $fieldOverride->relationTargetTypes[$targetTable]), true);
+        $targetSubSchemata = $targetSchema->getSubSchemata();
+        if (count($targetSubSchemata) === 0) {
+            return [['table' => $targetTable, 'type' => null]];
+        }
+
+        $targets = [];
+        foreach ($targetSubSchemata as $type => $_) {
+            $targets[] = ['table' => $targetTable, 'type' => (string)$type];
+        }
+
+        return $targets;
+    }
+
+    private function resolveTargetModelClassName(
+        string $targetTable,
+        string|null $targetType = null,
+    ): ?string
+    {
+        $tableOverride = $this->configuration->getTableOverride($targetTable, $targetType);
+        if (!($tableOverride->generate ?? true)) {
+            return null;
+        }
+
+        $className = $tableOverride->className ?? $this->namingHelper->classNameForType($targetTable, $targetType);
+
+        return $this->namingHelper->namespaceForTable($this->configuration->targetPhpNamespace, $targetTable) . '\\' . $className;
     }
 
     /**

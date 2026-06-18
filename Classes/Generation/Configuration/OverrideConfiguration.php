@@ -8,9 +8,9 @@ readonly class OverrideConfiguration
      * @param array<string, FieldOverrideConfiguration> $fields
      */
     public function __construct(
+        public ?bool $generate = null,
         public ?string $className = null,
-        public bool $generate = true,
-        public array $fields = [],
+        public ?array $fields = null,
     ) {
     }
 }

@@ -5,21 +5,33 @@ declare(strict_types=1);
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
 use Nette\PhpGenerator\Helpers;
+use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
 
 class NamingHelper
 {
+    public function __construct(
+        private readonly Configuration $configuration,
+    ) {
+    }
+
     public function namespaceForTable(string $rootNamespace, string $table): string
     {
         return trim($rootNamespace, '\\') . '\\' . $this->tableNamespaceSegment($table);
     }
 
-    public function classNameForType(string $table, string $type): string
+    public function classNameForType(string $table, ?string $type): string
     {
-        if (is_numeric($type)) {
-            return 'Type' . $type;
+        $override = $this->configuration->getTableOverride($table, $type)->className;
+        if (isset($override)) {
+            return $override;
+        }
+
+        $name = $type ?? $table;
+        if (is_numeric($name)) {
+            return 'Type' . $name;
         }
         
-        $result = ucfirst(str_replace('_', '', ucwords($type, '_-')));
+        $result = ucfirst(str_replace('_', '', ucwords($name, '_-')));
 
         if (Helpers::isIdentifier($result) || isset(Helpers::Keywords[strtolower($result)])) {
             $result .= 'ContentModel';

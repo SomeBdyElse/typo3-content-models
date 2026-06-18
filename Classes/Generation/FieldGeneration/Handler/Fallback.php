@@ -60,6 +60,7 @@ final readonly class Fallback implements HandlerInterface
             SmallIntType::class => match ($field->getType()) {
                 'check' => Type::Bool,
                 'radio' => Type::Int,
+                default => Type::Int,
             },
             BigIntType::class => match ($field->getType()) {
                 'datetime' => \DateTimeInterface::class,

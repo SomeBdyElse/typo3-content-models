@@ -6,7 +6,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GeneratorFactory
 {
-    public function getContentModelGenerator(string $table, string $type): ModelGenerator
+    public function getContentModelGenerator(string $table, ?string $type): ModelGenerator
     {
         return GeneralUtility::makeInstance(DefaultGenerator::class);
     }

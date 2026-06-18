@@ -3,7 +3,6 @@
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
-use TYPO3\CMS\Core\Schema\SchemaCollection;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 
 class GenerationService
@@ -27,16 +26,26 @@ class GenerationService
         $generatedModels = [];
         $schemata = $this->schemaFactory->all();
 
-        foreach ($schemata as $tableName => $tableSchema) {
-            $subSchemata = $tableSchema->getSubSchemata();
-            foreach ($subSchemata as $type => $subSchema) {
-                $generate = ($this->configuration->overrides[$tableName][$type] ?? null)?->generate ?? true;
-                if (!$generate) {
-                    continue;
+        $sources = [];
+        foreach ($schemata as $table => $tableSchema) {
+            $typeSchemata = $tableSchema->getSubSchemata();
+            if (count($typeSchemata) === 0) {
+                $sources[] = [$table, null];
+            } else {
+                foreach ($typeSchemata as $type => $_) {
+                    $sources[] = [$table, (string)$type];
                 }
-                $generator = $this->generatorFactory->getContentModelGenerator($tableName, $type);
-                $generatedModels[] = $generator->generateModel($tableName, $type);
             }
+        }
+
+        $sources = array_filter(
+            $sources,
+            fn(array $source) => $this->configuration->getTableOverride($source[0], $source[1])->generate ?? true
+        );
+
+        foreach ($sources as [$table, $type]) {
+            $generator = $this->generatorFactory->getContentModelGenerator($table, $type);
+            $generatedModels[] = $generator->generateModel($table, $type);
         }
 
         return $generatedModels;

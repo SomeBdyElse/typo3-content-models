@@ -36,10 +36,10 @@ final readonly class ConfigurationFactory
                 'generateComposerJson',
                 false,
             ),
-            overrides: $this->getArraySetting(
+            overrides: $this->getOverrideSetting(
                 $settings,
                 'overrides',
-                [],
+                new GlobalOverrideConfiguration(),
             )
         );
     }
@@ -65,11 +65,11 @@ final readonly class ConfigurationFactory
     /**
      * @param array<string, mixed> $settings
      */
-    private function getArraySetting(array $settings, string $key, array $default): array
+    private function getOverrideSetting(array $settings, string $key, GlobalOverrideConfiguration $default): GlobalOverrideConfiguration
     {
         $value = $settings[$key] ?? $default;
-        if (!is_array($value)) {
-            throw new \RuntimeException("$key must be an array");
+        if (!$value instanceof GlobalOverrideConfiguration) {
+            throw new \RuntimeException("$key must be a " . GlobalOverrideConfiguration::class);
         }
         return $value;
     }

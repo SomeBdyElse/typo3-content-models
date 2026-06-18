@@ -32,7 +32,7 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
     public function generateModel(string $table, ?string $type): GeneratedModel
     {
         $tableSchema = $this->schemaFactory->get($table);
-        $subSchema = $tableSchema->getSubSchema($type);
+        $schema = $type === null ? $tableSchema : $tableSchema->getSubSchema($type);
 
         $nameSpace = $this->namingHelper->namespaceForTable($this->configuration->targetPhpNamespace, $table);
         $namespacePath = rtrim($this->configuration->targetDirectory) . '/' . $this->namingHelper->directoryNameForTable($table);
@@ -48,8 +48,7 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
         $modelNamespace->addUse(ContentModel::class);
         $modelNamespace->addUse(Record::class);
 
-        $classNameOverride = $this->configuration->overrides[$table][$type]?->className;
-        $className = $classNameOverride ?? $this->namingHelper->classNameForType($table, $type);
+        $className = $this->namingHelper->classNameForType($table, $type);
         $model = $modelNamespace->addClass($className);
         $model->addAttribute(ContentModel::class, [
             'table' => $table,
@@ -59,14 +58,14 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
         $staticBody = '$arguments = [];' . "\n";
         $model->addImplement($contentModelInterface);
         $constructor = $model->addMethod('__construct');
-        foreach($subSchema->getFields() as $field) {
+        foreach ($schema->getFields() as $field) {
             if ($this->isSystemField($tableSchema, $field)) {
                 continue;
             }
             if ($field->getConfiguration()['type'] === 'none') {
                 continue;
             }
-            $generatedField = $this->fieldHandlerResolver->generate($table, $type, $subSchema, $field);
+            $generatedField = $this->fieldHandlerResolver->generate($table, $type, $schema, $field);
             foreach ($generatedField->uses as $use) {
                 $modelNamespace->addUse($use);
             }
