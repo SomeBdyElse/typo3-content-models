@@ -12,6 +12,9 @@ services:
   SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration:
     factory: ['@SomeBdyElse\Typo3ContentModels\Generation\Configuration\ConfigurationFactory', 'create']
 
+  SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\DatabaseSchemaProviderInterface:
+    alias: SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\ExpectedDatabaseSchemaProvider
+
   SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerResolver:
     arguments:
       $handlers:

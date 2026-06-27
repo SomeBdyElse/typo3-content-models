@@ -12,16 +12,16 @@ use Doctrine\DBAL\Types\SmallIntType;
 use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\TextType;
 use Nette\PhpGenerator\Type;
+use SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\DatabaseSchemaProviderInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 
 final readonly class Fallback implements HandlerInterface
 {
     public function __construct(
-        private ConnectionPool $connectionPool,
+        private DatabaseSchemaProviderInterface $databaseSchemaProvider,
     ) {
     }
 
@@ -45,31 +45,30 @@ final readonly class Fallback implements HandlerInterface
 
     private function getDatabasePhpType(string $table, FieldTypeInterface $field): string
     {
-        $connection = $this->connectionPool->getConnectionForTable($table);
-        $schemaInfo = $connection->getSchemaInformation();
-        $column = $schemaInfo->getTableInfo($table)->getColumnInfo($field->getName());
+        $column = $this->databaseSchemaProvider->getColumn($table, $field->getName());
         if ($column === null) {
             return Type::Mixed;
         }
 
-        $baseType = match (get_class($column->getType())) {
-            StringType::class => Type::String,
-            IntegerType::class => Type::Int,
-            BooleanType::class => Type::Bool,
-            DateTimeType::class => \DateTimeInterface::class,
-            SmallIntType::class => match ($field->getType()) {
+        $columnType = $column->getType();
+        $baseType = match (true) {
+            $columnType instanceof StringType => Type::String,
+            $columnType instanceof IntegerType => Type::Int,
+            $columnType instanceof BooleanType => Type::Bool,
+            $columnType instanceof DateTimeType => \DateTimeInterface::class,
+            $columnType instanceof SmallIntType => match ($field->getType()) {
                 'check' => Type::Bool,
                 'radio' => Type::Int,
                 default => Type::Int,
             },
-            BigIntType::class => match ($field->getType()) {
+            $columnType instanceof BigIntType => match ($field->getType()) {
                 'datetime' => \DateTimeInterface::class,
                 default => Type::Int,
             },
-            TextType::class => Type::String,
+            $columnType instanceof TextType => Type::String,
             default => Type::Mixed,
         };
 
-        return $baseType === Type::Mixed ? $baseType : Type::nullable($baseType, !$column->notNull);
+        return $baseType === Type::Mixed ? $baseType : Type::nullable($baseType, !$column->getNotnull());
     }
 }
