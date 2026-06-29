@@ -58,6 +58,11 @@ class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
         $staticBody = '$arguments = [];' . "\n";
         $model->addImplement($contentModelInterface);
         $constructor = $model->addMethod('__construct');
+
+        $uidParameter = $constructor->addPromotedParameter('uid');
+        $uidParameter->setType('int');
+        $staticBody .= "\$arguments['uid'] = \$record->get('uid');\n";
+
         foreach ($schema->getFields() as $field) {
             if ($this->isSystemField($tableSchema, $field)) {
                 continue;
