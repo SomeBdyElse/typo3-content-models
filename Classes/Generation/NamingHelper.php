@@ -31,7 +31,13 @@ class NamingHelper
             return 'Type' . $name;
         }
         
-        $result = ucfirst(str_replace('_', '', ucwords($name, '_-')));
+        $result = $this->identifierSegment($name, 'Content');
+        if (is_numeric($result[0])) {
+            $result = 'Type' . $result;
+        }
+        if (!Helpers::isIdentifier($result)) {
+            $result = 'Content';
+        }
 
         if (Helpers::isIdentifier($result) || isset(Helpers::Keywords[strtolower($result)])) {
             $result .= 'ContentModel';
@@ -48,7 +54,7 @@ class NamingHelper
     private function tableNamespaceSegment(string $table): string
     {
         $normalizedTable = preg_replace('/^(tt_|tx_)/', '', $table) ?? $table;
-        $result = str_replace('_', '', ucwords($normalizedTable, '_-'));
+        $result = $this->identifierSegment($normalizedTable, 'Table');
 
         if ($result === '') {
             return 'Table';
@@ -59,5 +65,13 @@ class NamingHelper
         }
 
         return $result;
+    }
+
+    private function identifierSegment(string $value, string $fallback): string
+    {
+        $identifier = preg_replace('/[^a-zA-Z0-9]+/', ' ', $value) ?? '';
+        $identifier = str_replace(' ', '', ucwords(trim($identifier)));
+
+        return $identifier === '' ? $fallback : $identifier;
     }
 }
