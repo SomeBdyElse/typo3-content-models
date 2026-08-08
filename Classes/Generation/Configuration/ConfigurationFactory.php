@@ -31,11 +31,6 @@ final readonly class ConfigurationFactory
                 'targetDirectory',
                 'EXT:typo3_api/Classes/Model/Content',
             ),
-            generateComposerJson: $this->getBoolSetting(
-                $settings,
-                'generateComposerJson',
-                false,
-            ),
             overrides: $this->getOverrideSetting(
                 $settings,
                 'overrides',
@@ -51,15 +46,6 @@ final readonly class ConfigurationFactory
     {
         $value = $settings[$key] ?? $default;
         return is_string($value) && $value !== '' ? $value : $default;
-    }
-
-    /**
-     * @param array<string, mixed> $settings
-     */
-    private function getBoolSetting(array $settings, string $key, bool $default): bool
-    {
-        $value = $settings[$key] ?? $default;
-        return filter_var($value, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? $default;
     }
 
     /**

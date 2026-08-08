@@ -3,6 +3,3 @@ targetPhpNamespace = SomeBdyElse\ContentModels\Model
 
 # cat=generation; type=string; label=Target directory: EXT: path where generated content model classes are written.
 targetDirectory = EXT:content_models/Classes/Model/Content
-
-# cat=generation; type=boolean; label=Generate composer.json: If enabled, the generator may create a composer.json for the target package.
-generateComposerJson = 0

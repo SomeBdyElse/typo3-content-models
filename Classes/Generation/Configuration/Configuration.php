@@ -11,7 +11,6 @@ readonly class Configuration
     public function __construct(
         public string $targetPhpNamespace,
         string $targetDirectory,
-        public bool $generateComposerJson,
         public GlobalOverrideConfiguration $overrides,
     ) {
         $this->targetDirectory = rtrim($targetDirectory, '/');
