@@ -40,7 +40,7 @@ class GenerationService
 
         $sources = array_filter(
             $sources,
-            fn(array $source) => $this->configuration->getTableOverride($source[0], $source[1])->generate ?? true
+            fn(array $source) => $this->configuration->getTableConfiguration($source[0], $source[1])['generate'] ?? true
         );
 
         foreach ($sources as [$table, $type]) {

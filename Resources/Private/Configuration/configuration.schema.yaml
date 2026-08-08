@@ -1,0 +1,93 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://somebdyelse.github.io/typo3-content-models/configuration.schema.yaml
+title: TYPO3 Content Models configuration
+type: object
+additionalProperties: true
+properties:
+  targetPhpNamespace:
+    type: string
+    minLength: 1
+    description: Namespace used for generated content model classes.
+  targetDirectory:
+    type: string
+    minLength: 1
+    description: "EXT: path where generated content model classes are written."
+  overrides:
+    $ref: "#/$defs/globalOverride"
+required:
+  - targetPhpNamespace
+  - targetDirectory
+$defs:
+  globalOverride:
+    allOf:
+      - $ref: "#/$defs/overrideBase"
+      - type: object
+        additionalProperties: true
+        properties:
+          generate:
+            type: boolean
+          className:
+            type: string
+            minLength: 1
+          fields:
+            $ref: "#/$defs/fieldMap"
+          tables:
+            type: object
+            additionalProperties:
+              $ref: "#/$defs/tableOverride"
+  tableOverride:
+    allOf:
+      - $ref: "#/$defs/overrideBase"
+      - type: object
+        additionalProperties: true
+        properties:
+          generate:
+            type: boolean
+          className:
+            type: string
+            minLength: 1
+          fields:
+            $ref: "#/$defs/fieldMap"
+          types:
+            type: object
+            additionalProperties:
+              $ref: "#/$defs/override"
+  override:
+    allOf:
+      - $ref: "#/$defs/overrideBase"
+      - type: object
+        additionalProperties: true
+        properties:
+          generate:
+            type: boolean
+          className:
+            type: string
+            minLength: 1
+          fields:
+            $ref: "#/$defs/fieldMap"
+  overrideBase:
+    type: object
+    properties:
+      generate:
+        type: boolean
+      className:
+        type: string
+        minLength: 1
+      fields:
+        $ref: "#/$defs/fieldMap"
+  fieldMap:
+    type: object
+    additionalProperties:
+      $ref: "#/$defs/fieldOverride"
+  fieldOverride:
+    type: object
+    additionalProperties: true
+    properties:
+      relationTargetTypes:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: integer

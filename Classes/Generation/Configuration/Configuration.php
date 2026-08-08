@@ -4,54 +4,77 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
+/**
+ * @phpstan-type FieldConfiguration array{relationTargetTypes?: array<string, list<int|string>>, ...}
+ * @phpstan-type ContentModelConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, ...}
+ * @phpstan-type TableConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, types?: array<string, ContentModelConfiguration>, ...}
+ * @phpstan-type GlobalConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, tables?: array<string, TableConfiguration>, ...}
+ * @phpstan-type Settings array{targetPhpNamespace: string, targetDirectory: string, overrides?: GlobalConfiguration, ...}
+ */
 readonly class Configuration
 {
+    public string $targetPhpNamespace;
     public string $targetDirectory;
+    public array $contentModelConfiguration;
     
+    /**
+     * @param Settings $settings
+     */
     public function __construct(
-        public string $targetPhpNamespace,
-        string $targetDirectory,
-        public GlobalOverrideConfiguration $overrides,
+        public array $settings,
     ) {
-        $this->targetDirectory = rtrim($targetDirectory, '/');
+        $this->targetPhpNamespace = $settings['targetPhpNamespace'];
+        $this->targetDirectory = rtrim($settings['targetDirectory'], '/');
+        $this->contentModelConfiguration = $settings['overrides'] ?? [];
     }
 
-    public function getTableOverride(string $table, ?string $type = null): OverrideConfiguration
+    /**
+     * @return ContentModelConfiguration
+     */
+    public function getTableConfiguration(string $table, ?string $type = null): array
     {
-        $override = $this->overrides;
+        $configuration = $this->contentModelConfiguration;
 
-        $tableConfiguration = $this->overrides->tables[$table] ?? null;
-        if (!$tableConfiguration instanceof TableOverrideConfiguration) {
-            return $override;
+        $tableConfiguration = $this->contentModelConfiguration['tables'][$table] ?? null;
+        if (!is_array($tableConfiguration)) {
+            return $configuration;
         }
 
-        $override = $this->mergeOverrides($override, $tableConfiguration);
+        $configuration = $this->mergeConfigurations($configuration, $tableConfiguration);
 
         if ($type === null) {
-            return $override;
+            return $configuration;
         }
 
-        $typeConfiguration = $tableConfiguration->types[$type] ?? null;
-        if (!$typeConfiguration instanceof OverrideConfiguration) {
-            return $override;
+        $typeConfiguration = $tableConfiguration['types'][(string)$type] ?? null;
+        if (!is_array($typeConfiguration)) {
+            return $configuration;
         }
 
-        return $this->mergeOverrides($override, $typeConfiguration);
+        return $this->mergeConfigurations($configuration, $typeConfiguration);
     }
 
-    public function getFieldOverride(string $table, ?string $type, string $field): ?FieldOverrideConfiguration
+    /**
+     * @return FieldConfiguration|null
+     */
+    public function getFieldConfiguration(string $table, ?string $type, string $field): ?array
     {
-        return $this->getTableOverride($table, $type)->fields[$field] ?? null;
+        return $this->getTableConfiguration($table, $type)['fields'][$field] ?? null;
     }
 
-    private function mergeOverrides(OverrideConfiguration $base, OverrideConfiguration $overlay): OverrideConfiguration
+    /**
+     * @param ContentModelConfiguration $base
+     * @param ContentModelConfiguration $overlay
+     * @return ContentModelConfiguration
+     */
+    private function mergeConfigurations(array $base, array $overlay): array
     {
-        return new OverrideConfiguration(
-            generate: $overlay->generate ?? $base->generate,
-            className: $overlay->className ?? $base->className,
-            fields: $overlay->fields !== null
-                ? array_replace($base->fields ?? [], $overlay->fields)
-                : $base->fields,
-        );
+        $merged = array_replace($base, $overlay);
+
+        if (array_key_exists('fields', $overlay) && is_array($overlay['fields'])) {
+            $merged['fields'] = array_replace($base['fields'] ?? [], $overlay['fields']);
+        }
+
+        return $merged;
     }
 }

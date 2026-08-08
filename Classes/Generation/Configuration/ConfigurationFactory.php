@@ -4,59 +4,47 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
-use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
-use SomeBdyElse\Typo3ContentModels\Generation\GeneratorFactory;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 
 final readonly class ConfigurationFactory
 {
+    private const DEFAULT_CONFIGURATION_FILE = 'EXT:content_models/Resources/Private/Configuration/default_configuration.yaml';
+    private const PROJECT_CONFIGURATION_FILE = 'system/content_models.yaml';
+
     public function __construct(
-        private ExtensionConfiguration $extensionConfiguration,
-        private GeneratorFactory $generatorFactory,
+        private YamlFileLoader $yamlFileLoader,
     ) {
     }
 
     public function create(): Configuration
     {
-        $settings = $this->extensionConfiguration->get('content_models');
+        $settings = $this->loadSettings();
 
-        return new Configuration(
-            targetPhpNamespace: $this->getStringSetting(
-                $settings,
-                'targetPhpNamespace',
-                'Typo3Api\\Typo3Api\\Model\\Content',
-            ),
-            targetDirectory: $this->getStringSetting(
-                $settings,
-                'targetDirectory',
-                'EXT:typo3_api/Classes/Model/Content',
-            ),
-            overrides: $this->getOverrideSetting(
-                $settings,
-                'overrides',
-                new GlobalOverrideConfiguration(),
-            )
-        );
+        return new Configuration($settings);
     }
 
     /**
-     * @param array<string, mixed> $settings
+     * @return array<string, mixed>
      */
-    private function getStringSetting(array $settings, string $key, string $default): string
+    private function loadSettings(): array
     {
-        $value = $settings[$key] ?? $default;
-        return is_string($value) && $value !== '' ? $value : $default;
-    }
+        $settings = $this->yamlFileLoader->load(self::DEFAULT_CONFIGURATION_FILE);
+        $projectConfigurationFile = Environment::getConfigPath() . '/' . self::PROJECT_CONFIGURATION_FILE;
 
-    /**
-     * @param array<string, mixed> $settings
-     */
-    private function getOverrideSetting(array $settings, string $key, GlobalOverrideConfiguration $default): GlobalOverrideConfiguration
-    {
-        $value = $settings[$key] ?? $default;
-        if (!$value instanceof GlobalOverrideConfiguration) {
-            throw new \RuntimeException("$key must be a " . GlobalOverrideConfiguration::class);
+        if (is_file($projectConfigurationFile)) {
+            $projectSettings = $this->yamlFileLoader->load(
+                $projectConfigurationFile,
+                YamlFileLoader::PROCESS_PLACEHOLDERS
+                | YamlFileLoader::PROCESS_IMPORTS
+                | YamlFileLoader::ALLOW_EMPTY_FILE,
+            );
+            ArrayUtility::mergeRecursiveWithOverrule($settings, $projectSettings);
         }
-        return $value;
+
+        unset($settings['$schema']);
+
+        return $settings;
     }
 }

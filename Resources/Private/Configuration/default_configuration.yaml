@@ -1,0 +1,33 @@
+$schema: ./configuration.schema.yaml
+targetPhpNamespace: SomeBdyElse\ContentModels\Model
+targetDirectory: EXT:content_models/Classes/Model/Content
+overrides:
+  generate: false
+  tables:
+    pages:
+      generate: true
+      types:
+        1:
+          className: DefaultPage
+        3:
+          className: ShortcutExternal
+          generate: false
+        4:
+          className: Shortcut
+          generate: false
+        6:
+          className: BackendUsers
+          generate: false
+        7:
+          className: MountPoint
+          generate: false
+        199:
+          className: Spacer
+          generate: false
+        254:
+          className: SystemFolder
+          generate: false
+    tt_content:
+      generate: true
+    sys_category:
+      generate: true

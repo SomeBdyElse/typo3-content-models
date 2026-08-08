@@ -21,9 +21,9 @@ class NamingHelper
 
     public function classNameForType(string $table, ?string $type): string
     {
-        $override = $this->configuration->getTableOverride($table, $type)->className;
-        if (isset($override)) {
-            return $override;
+        $className = $this->configuration->getTableConfiguration($table, $type)['className'] ?? null;
+        if (isset($className)) {
+            return $className;
         }
 
         $name = $type ?? $table;
