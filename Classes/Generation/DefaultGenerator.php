@@ -10,7 +10,7 @@ use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
-use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerResolver;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\FieldGenerator;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
@@ -23,7 +23,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
 {
     public function __construct(
         protected NamingHelper $namingHelper,
-        protected HandlerResolver $fieldHandlerResolver,
+        protected FieldGenerator $fieldGenerator,
         protected TcaSchemaFactory $schemaFactory,
         protected Configuration $configuration,
     ) {
@@ -70,7 +70,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
             if ($field->getConfiguration()['type'] === 'none') {
                 continue;
             }
-            $generatedField = $this->fieldHandlerResolver->generate($table, $type, $schema, $field);
+            $generatedField = $this->fieldGenerator->generate($table, $type, $schema, $field);
             foreach ($generatedField->uses as $use) {
                 $modelNamespace->addUse($use);
             }

@@ -7,7 +7,7 @@ namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 
-final readonly class HandlerResolver
+final readonly class FieldGenerator
 {
     /**
      * @param iterable<HandlerInterface> $handlers

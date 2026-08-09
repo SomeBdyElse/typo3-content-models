@@ -16,7 +16,7 @@ services:
   SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\DatabaseSchemaProviderInterface:
     alias: SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\ExpectedDatabaseSchemaProvider
 
-  SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerResolver:
+  SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\FieldGenerator:
     arguments:
       $handlers:
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\File'
