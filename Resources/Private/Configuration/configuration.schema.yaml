@@ -12,6 +12,9 @@ properties:
     type: string
     minLength: 1
     description: "EXT: path where generated content model classes are written."
+  commonCodeGenerator:
+    $ref: "#/$defs/phpClassName"
+    description: PHP class name of a generator implementing SomeBdyElse\Typo3ContentModels\Generation\CommonCodeGenerator.
   overrides:
     $ref: "#/$defs/globalOverride"
 required:
@@ -73,8 +76,15 @@ $defs:
       className:
         type: string
         minLength: 1
+      generator:
+        $ref: "#/$defs/phpClassName"
       fields:
         $ref: "#/$defs/fieldMap"
+  phpClassName:
+    type: string
+    minLength: 1
+    pattern: '^[A-Za-z_][A-Za-z0-9_]*(\\[A-Za-z_][A-Za-z0-9_]*)*$'
+    description: PHP class name, for example the result of Some\Generator::class.
   fieldMap:
     type: object
     additionalProperties:

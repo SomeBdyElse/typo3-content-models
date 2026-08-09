@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\Configuration;
 
+use SomeBdyElse\Typo3ContentModels\Generation\CommonCodeGenerator;
+use SomeBdyElse\Typo3ContentModels\Generation\ModelGenerator;
+
 /**
  * @phpstan-type FieldConfiguration array{relationTargetTypes?: array<string, list<int|string>>, ...}
- * @phpstan-type ContentModelConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, ...}
- * @phpstan-type TableConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, types?: array<string, ContentModelConfiguration>, ...}
- * @phpstan-type GlobalConfiguration array{generate?: bool|null, className?: string|null, fields?: array<string, FieldConfiguration>|null, tables?: array<string, TableConfiguration>, ...}
- * @phpstan-type Settings array{targetPhpNamespace: string, targetDirectory: string, overrides?: GlobalConfiguration, ...}
+ * @phpstan-type ContentModelConfiguration array{generate?: bool|null, className?: string|null, generator?: class-string<ModelGenerator>|null, fields?: array<string, FieldConfiguration>|null, ...}
+ * @phpstan-type TableConfiguration array{generate?: bool|null, className?: string|null, generator?: class-string<ModelGenerator>|null, fields?: array<string, FieldConfiguration>|null, types?: array<string, ContentModelConfiguration>, ...}
+ * @phpstan-type GlobalConfiguration array{generate?: bool|null, className?: string|null, generator?: class-string<ModelGenerator>|null, fields?: array<string, FieldConfiguration>|null, tables?: array<string, TableConfiguration>, ...}
+ * @phpstan-type Settings array{targetPhpNamespace: string, targetDirectory: string, commonCodeGenerator?: class-string<CommonCodeGenerator>|null, overrides?: GlobalConfiguration, ...}
  */
 readonly class Configuration
 {
