@@ -12,33 +12,33 @@ class GeneratorFactory
     ) {
     }
 
-    public function getContentModelGenerator(string $table, ?string $type): ModelGenerator
+    public function getContentModelGenerator(string $table, ?string $type): ModelGeneratorInterface
     {
         $configuration = $this->configuration->getTableConfiguration($table, $type);
         $generatorClass = $configuration['generator'] ?? DefaultGenerator::class;
         $generatorClass = ltrim($generatorClass, '\\');
 
-        if (!is_a($generatorClass, ModelGenerator::class, true)) {
+        if (!is_a($generatorClass, ModelGeneratorInterface::class, true)) {
             throw new \RuntimeException(sprintf(
                 'The configured generator for table "%s"%s must be a PHP class and implement %s.',
                 $table,
                 $type === null ? '' : sprintf(' and type "%s"', $type),
-                ModelGenerator::class,
+                ModelGeneratorInterface::class,
             ), 1781337824);
         }
 
         return GeneralUtility::makeInstance($generatorClass);
     }
 
-    public function getCommonCodeGenerator(): CommonCodeGenerator
+    public function getCommonCodeGenerator(): CommonCodeGeneratorInterface
     {
         $generatorClass = $this->configuration->settings['commonCodeGenerator'] ?? DefaultGenerator::class;
         $generatorClass = ltrim($generatorClass, '\\');
 
-        if (!is_a($generatorClass, CommonCodeGenerator::class, true)) {
+        if (!is_a($generatorClass, CommonCodeGeneratorInterface::class, true)) {
             throw new \RuntimeException(sprintf(
                 'The configured common code generator must be a PHP class and implement %s.',
-                CommonCodeGenerator::class,
+                CommonCodeGeneratorInterface::class,
             ), 1781337826);
         }
 

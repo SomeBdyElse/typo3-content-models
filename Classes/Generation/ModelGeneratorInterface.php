@@ -2,7 +2,7 @@
 
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
-interface ModelGenerator
+interface ModelGeneratorInterface
 {
     public function generateModel(
         string $table,

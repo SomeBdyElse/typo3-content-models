@@ -2,7 +2,7 @@
 
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
-interface CommonCodeGenerator
+interface CommonCodeGeneratorInterface
 {
     public function generateCommonCode(array $generatedModels = []): void;
 }

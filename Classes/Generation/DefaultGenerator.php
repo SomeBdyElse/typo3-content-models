@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Schema\TcaSchema;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class DefaultGenerator implements ModelGenerator, CommonCodeGenerator
+class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorInterface
 {
     public function __construct(
         protected NamingHelper $namingHelper,

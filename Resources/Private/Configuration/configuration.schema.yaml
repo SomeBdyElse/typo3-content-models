@@ -14,7 +14,7 @@ properties:
     description: "EXT: path where generated content model classes are written."
   commonCodeGenerator:
     $ref: "#/$defs/phpClassName"
-    description: PHP class name of a generator implementing SomeBdyElse\Typo3ContentModels\Generation\CommonCodeGenerator.
+    description: PHP class name of a generator implementing SomeBdyElse\Typo3ContentModels\Generation\CommonCodeGeneratorInterface.
   overrides:
     $ref: "#/$defs/globalOverride"
 required:
