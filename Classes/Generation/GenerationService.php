@@ -18,7 +18,6 @@ class GenerationService
     {
         $generatedModels = $this->generateContentModels();
         $this->generateCommonCode($generatedModels);
-
     }
 
     protected function generateContentModels(): array
