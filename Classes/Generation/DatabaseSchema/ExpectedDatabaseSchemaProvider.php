@@ -194,7 +194,7 @@ final class ExpectedDatabaseSchemaProvider implements DatabaseSchemaProviderInte
      */
     private function queueBuildTimeConnectionPools(): void
     {
-        $connectionPool = new class () extends ConnectionPool {
+        $connectionPool = new class extends ConnectionPool {
             public function getConnectionForTable(string $tableName): Connection
             {
                 return new class ($this->isTableConfiguredForSqlite($tableName)) extends Connection {

@@ -19,7 +19,7 @@ readonly class Configuration
     public string $targetPhpNamespace;
     public string $targetDirectory;
     public array $contentModelConfiguration;
-    
+
     /**
      * @param Settings $settings
      */

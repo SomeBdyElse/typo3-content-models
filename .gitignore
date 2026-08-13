@@ -1,2 +1,4 @@
 /.idea
+/.php-cs-fixer.cache
+/.Build
 /Classes/Model/Content

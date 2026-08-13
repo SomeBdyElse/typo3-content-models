@@ -37,10 +37,10 @@ final class ContentModelCompilerPass implements CompilerPassInterface
 
                 $type = $tag['type'] ?? null;
                 if ($type !== null && !is_string($type)) {
-                    $type = (string) $type;
+                    $type = (string)$type;
                 }
 
-                $contentModelsByTableAndType[$table][(string) $type] = $className;
+                $contentModelsByTableAndType[$table][(string)$type] = $className;
             }
         }
 

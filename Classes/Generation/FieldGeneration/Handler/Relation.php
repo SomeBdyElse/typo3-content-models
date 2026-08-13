@@ -75,7 +75,7 @@ final readonly class Relation implements HandlerInterface
     private function templateArgument(array $classNames): string
     {
         return implode('|', array_map(
-            static fn (string $className): string => '\\' . ltrim($className, '\\'),
+            static fn(string $className): string => '\\' . ltrim($className, '\\'),
             $classNames,
         ));
     }
@@ -126,7 +126,7 @@ final readonly class Relation implements HandlerInterface
     {
         if ($fieldConfiguration !== null && array_key_exists($targetTable, $fieldConfiguration['relationTargetTypes'] ?? [])) {
             return array_map(
-                static fn (string|int $type): array => ['table' => $targetTable, 'type' => (string)$type],
+                static fn(string|int $type): array => ['table' => $targetTable, 'type' => (string)$type],
                 $fieldConfiguration['relationTargetTypes'][$targetTable],
             );
         }
@@ -152,9 +152,8 @@ final readonly class Relation implements HandlerInterface
 
     private function resolveTargetModelClassName(
         string $targetTable,
-        string|null $targetType = null,
-    ): ?string
-    {
+        ?string $targetType = null,
+    ): ?string {
         $tableConfiguration = $this->configuration->getTableConfiguration($targetTable, $targetType);
         if (!($tableConfiguration['generate'] ?? true)) {
             return null;

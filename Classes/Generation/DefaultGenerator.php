@@ -28,7 +28,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
         protected Configuration $configuration,
     ) {
     }
-    
+
     public function generateModel(string $table, ?string $type): GeneratedModel
     {
         $tableSchema = $this->schemaFactory->get($table);
@@ -36,7 +36,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
 
         $nameSpace = $this->namingHelper->namespaceForTable($this->configuration->targetPhpNamespace, $table);
         $namespacePath = rtrim($this->configuration->targetDirectory) . '/' . $this->namingHelper->directoryNameForTable($table);
-        
+
         $modelDirectory = GeneralUtility::getFileAbsFileName($namespacePath);
         if (!is_dir($modelDirectory)) {
             GeneralUtility::mkdir_deep($modelDirectory);
@@ -86,13 +86,13 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
             if ($parameterType->isClass()) {
                 $modelNamespace->addUse(\Nette\PhpGenerator\Type::nullable((string)$parameterType, false));
             }
-            
-            $parameter->setType((string) $parameterType);
+
+            $parameter->setType((string)$parameterType);
 
             $staticBody .= "\$arguments['{$fieldName}'] = {$generatedField->fromRecordExpression};\n";
         }
         $fullClassName = "\\{$nameSpace}\\{$className}";
-        $staticBody .= "return new self(...\$arguments);";
+        $staticBody .= 'return new self(...$arguments);';
 
         $fromRecord = $model->addMethod('fromRecord');
         $fromRecord
@@ -109,7 +109,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
         $filename = $className . '.php';
         $path = $modelDirectory . '/' . $filename;
         file_put_contents($path, $file);
-        
+
         return new GeneratedModel(
             table: $table,
             type: $type,
@@ -134,7 +134,7 @@ class DefaultGenerator implements ModelGeneratorInterface, CommonCodeGeneratorIn
             } catch (\Throwable) {
                 continue;
             }
-            
+
             if ($capability instanceof LanguageAwareSchemaCapability) {
                 $systemFields[] = $capability->getLanguageField();
                 $systemFields[] = $capability->getTranslationSourceField();

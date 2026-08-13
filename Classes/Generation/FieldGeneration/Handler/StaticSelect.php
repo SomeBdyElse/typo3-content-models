@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler;
 
-use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;

@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use SomeBdyElse\Typo3ContentModels\Rendering\DependencyInjection\ContentModelCompilerPass;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
+use SomeBdyElse\Typo3ContentModels\Rendering\DependencyInjection\ContentModelCompilerPass;
 use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

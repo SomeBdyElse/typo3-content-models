@@ -30,7 +30,7 @@ class NamingHelper
         if (is_numeric($name)) {
             return 'Type' . $name;
         }
-        
+
         $result = $this->identifierSegment($name, 'Content');
         if (is_numeric($result[0])) {
             $result = 'Type' . $result;

@@ -16,7 +16,7 @@ final class ContentModelRegistry implements ContentModelRegistryInterface
 
     public function getModelClassName(string $table, ?string $type): ?string
     {
-        return $this->modelClassNamesByTableAndType[$table][(string) $type] ?? null;
+        return $this->modelClassNamesByTableAndType[$table][(string)$type] ?? null;
     }
 
     public function all(): array
@@ -37,6 +37,6 @@ final class ContentModelRegistry implements ContentModelRegistryInterface
             ));
         }
 
-        $this->modelClassNamesByTableAndType[$table][(string) $type] = $className;
+        $this->modelClassNamesByTableAndType[$table][(string)$type] = $className;
     }
 }
