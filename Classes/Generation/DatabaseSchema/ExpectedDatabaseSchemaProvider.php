@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema;
 
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\Driver;
+use Doctrine\DBAL\Driver\API\ExceptionConverter;
+use Doctrine\DBAL\Driver\Connection as DriverConnection;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\ServerVersionProvider;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Platform\MySQLPlatform;
@@ -197,9 +202,33 @@ final class ExpectedDatabaseSchemaProvider implements DatabaseSchemaProviderInte
         $connectionPool = new class extends ConnectionPool {
             public function getConnectionForTable(string $tableName): Connection
             {
-                return new class ($this->isTableConfiguredForSqlite($tableName)) extends Connection {
+                return new class (
+                    [],
+                    new class implements Driver {
+                        public function connect(array $params): DriverConnection
+                        {
+                            throw new \LogicException('The build-time schema connection must not connect to a database.');
+                        }
+
+                        public function getDatabasePlatform(ServerVersionProvider $versionProvider): AbstractPlatform
+                        {
+                            throw new \LogicException('The build-time schema connection provides its platform directly.');
+                        }
+
+                        public function getExceptionConverter(): ExceptionConverter
+                        {
+                            throw new \LogicException('The build-time schema connection must not convert driver exceptions.');
+                        }
+                    },
+                    null,
+                    $this->isTableConfiguredForSqlite($tableName),
+                ) extends Connection {
                     public function __construct(
-                        private readonly bool $sqlite,
+                        #[\SensitiveParameter]
+                        array $params,
+                        Driver $driver,
+                        ?Configuration $config = null,
+                        private readonly bool $sqlite = false,
                     ) {
                     }
 

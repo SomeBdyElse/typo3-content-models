@@ -17,8 +17,10 @@
   "license": "GPL-2.0+",
   "type": "typo3-cms-extension",
   "require": {
+    "nette/php-generator": "^4.2.0",
     "typo3/cms-core": "^v13.4.0 | ^14.0",
-    "nette/php-generator": "^4.2.0"
+    "typo3/cms-extbase": "^v13.4.0 | ^14.0",
+    "typo3/cms-frontend": "^v13.4.0 | ^14.0"
   },
   "autoload": {
     "psr-4": {
