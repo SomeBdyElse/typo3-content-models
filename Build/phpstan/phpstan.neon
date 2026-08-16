@@ -2,10 +2,14 @@ includes:
   - phpstan-baseline.neon
 
 parameters:
-  level: 0
+  level: 5
   paths:
     - ../../Classes
     - ../../Configuration
+  excludePaths:
+    analyse:
+      # ExpectedDatabaseSchemaProvider contains verbatim copy of a TYPO3 core class
+      - ../../Classes/Generation/DatabaseSchema/ExpectedDatabaseSchemaProvider.php
   bootstrapFiles:
     - ../../.Build/vendor/autoload.php
   tmpDir: ../../.Build/phpstan

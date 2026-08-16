@@ -50,7 +50,8 @@ final class ExpectedDatabaseSchemaProvider implements DatabaseSchemaProviderInte
      * database connection.
      *
      * This intentionally mirrors the non-DB-building part of
-     * TYPO3\CMS\Core\Database\Schema\SchemaMigrator::parseCreateTableStatements().
+     * TYPO3\CMS\Core\Database\Schema\SchemaMigrator::parseCreateTableStatements()
+     * in TYPO3 v13.
      *
      * @return array<string, Table>
      */
@@ -129,7 +130,7 @@ final class ExpectedDatabaseSchemaProvider implements DatabaseSchemaProviderInte
             $currentTable = $mergedTables[$tableName];
             $mergedTables[$tableName] = new Table(
                 $tableName,
-                $this->mergeColumns(...array_values($currentTable->getColumns()), ...array_values($table->getColumns())),
+                $this->mergeColumns(...$currentTable->getColumns(), ...$table->getColumns()),
                 $this->mergeIndexes(...array_values($currentTable->getIndexes()), ...array_values($table->getIndexes())),
                 [],
                 array_merge($currentTable->getForeignKeys(), $table->getForeignKeys()),

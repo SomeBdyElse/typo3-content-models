@@ -22,7 +22,7 @@ final class ContentModelCompilerPass implements CompilerPassInterface
         foreach ($container->findTaggedResourceIds(ContentModel::TAG) as $serviceId => $tags) {
             $definition = $container->findDefinition($serviceId);
             $className = $definition->getClass() ?: $serviceId;
-            if (!is_string($className) || !is_a($className, ContentModelInterface::class, true)) {
+            if (!is_a($className, ContentModelInterface::class, true)) {
                 continue;
             }
 

@@ -29,6 +29,7 @@ final class ContentModelRegistry implements ContentModelRegistryInterface
      */
     public function registerContentModel(string $table, ?string $type, string $className): void
     {
+        // @phpstan-ignore-next-line function.alreadyNarrowedType (runtime validation protects callers that ignore PHPDoc)
         if (!is_a($className, ContentModelInterface::class, true)) {
             throw new \InvalidArgumentException(sprintf(
                 'Content model class "%s" must implement %s.',
