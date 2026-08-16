@@ -6,6 +6,10 @@ parameters:
   paths:
     - ../../Classes
     - ../../Configuration
+  excludePaths:
+    analyse:
+      # ExpectedDatabaseSchemaProvider contains verbatim copy of a TYPO3 core class
+      - ../../Classes/Generation/DatabaseSchema/ExpectedDatabaseSchemaProvider.php
   bootstrapFiles:
     - ../../.Build/vendor/autoload.php
   tmpDir: ../../.Build/phpstan

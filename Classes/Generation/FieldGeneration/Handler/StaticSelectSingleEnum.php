@@ -47,6 +47,9 @@ final readonly class StaticSelectSingleEnum implements HandlerInterface
         $namespace = $this->namingHelper->namespaceForTable($this->configuration->targetPhpNamespace, $table);
         $fullEnumClassName = $namespace . '\\' . $enumClassName;
 
+        if (! $field instanceof StaticSelectFieldType) {
+            throw new \InvalidArgumentException('The field must implement ' . StaticSelectFieldType::class, 1786882075816);
+        }
         $cases = $this->enumCases($field);
         $enumType = $this->enumType($cases);
         $this->writeEnum($namespace, $enumClassName, $enumType, $cases, $table);
