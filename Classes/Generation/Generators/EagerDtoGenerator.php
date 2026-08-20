@@ -87,10 +87,6 @@ class EagerDtoGenerator implements ModelGeneratorInterface
                 $parameter->setComment('@var ' . $generatedField->phpDocType . ' $' . $fieldName);
             }
             $parameterType = Type::fromString($generatedField->nativeType);
-            if ($parameterType->isClass()) {
-                $modelNamespace->addUse(\Nette\PhpGenerator\Type::nullable((string)$parameterType, false));
-            }
-
             $parameter->setType((string)$parameterType);
 
             $staticBody .= "\$arguments['{$fieldName}'] = {$generatedField->fromRecordExpression};\n";

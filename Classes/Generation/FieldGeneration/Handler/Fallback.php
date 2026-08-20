@@ -36,10 +36,13 @@ final readonly class Fallback implements HandlerInterface
         TcaSchema $subSchema,
         FieldTypeInterface $field,
     ): GeneratedField {
+        $nativeType = $this->getDatabasePhpType($table, $field);
+
         return new GeneratedField(
             name: $field->getName(),
-            nativeType: $this->getDatabasePhpType($table, $field),
+            nativeType: $nativeType,
             fromRecordExpression: "\$record->get('{$field->getName()}')",
+            uses: $this->usesForNativeType($nativeType),
         );
     }
 
@@ -70,5 +73,21 @@ final readonly class Fallback implements HandlerInterface
         };
 
         return $baseType === Type::Mixed ? $baseType : Type::nullable($baseType, !$column->getNotnull());
+    }
+
+    /**
+     * @return list<class-string>
+     */
+    private function usesForNativeType(string $nativeType): array
+    {
+        $fieldType = \Nette\Utils\Type::fromString($nativeType);
+        if (!$fieldType->isClass()) {
+            return [];
+        }
+
+        /** @var class-string $nativeTypeUse */
+        $nativeTypeUse = Type::nullable((string)$fieldType, false);
+
+        return [$nativeTypeUse];
     }
 }
