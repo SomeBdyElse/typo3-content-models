@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\Schema\TcaSchema;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-class EagerDtoGenerator implements ModelGeneratorInterface, CommonCodeGeneratorInterface
+class EagerDtoGenerator implements ModelGeneratorInterface
 {
     public function __construct(
         protected NamingHelper $namingHelper,
@@ -147,12 +147,5 @@ class EagerDtoGenerator implements ModelGeneratorInterface, CommonCodeGeneratorI
         }
 
         return in_array($field->getName(), $systemFields);
-    }
-
-    /**
-     * @param list<GeneratedModel> $generatedModels
-     */
-    public function generateCommonCode(array $generatedModels = []): void
-    {
     }
 }
