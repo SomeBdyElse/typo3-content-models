@@ -2,15 +2,19 @@
 
 declare(strict_types=1);
 
-namespace SomeBdyElse\Typo3ContentModels\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Generation\Generators;
 
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModel;
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
+use SomeBdyElse\Typo3ContentModels\Generation\CommonCodeGeneratorInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\FieldGenerator;
+use SomeBdyElse\Typo3ContentModels\Generation\GeneratedModel;
+use SomeBdyElse\Typo3ContentModels\Generation\ModelGeneratorInterface;
+use SomeBdyElse\Typo3ContentModels\Generation\NamingHelper;
 use TYPO3\CMS\Core\Domain\Record;
 use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
