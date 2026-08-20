@@ -53,6 +53,10 @@ class GenerationService
     protected function generateCommonCode(array $generatedModels): void
     {
         $generator = $this->generatorFactory->getCommonCodeGenerator();
+        if (!isset($generator)) {
+            return;
+        }
+
         $generator->generateCommonCode($generatedModels);
     }
 }

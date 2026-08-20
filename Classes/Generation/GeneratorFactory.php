@@ -3,6 +3,7 @@
 namespace SomeBdyElse\Typo3ContentModels\Generation;
 
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
+use SomeBdyElse\Typo3ContentModels\Generation\Exception\NoGeneratorConfiguredException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class GeneratorFactory
@@ -15,7 +16,7 @@ class GeneratorFactory
     public function getContentModelGenerator(string $table, ?string $type): ModelGeneratorInterface
     {
         $configuration = $this->configuration->getTableConfiguration($table, $type);
-        $generatorClass = $configuration['generator'] ?? EagerDtoGenerator::class;
+        $generatorClass = $configuration['generator'] ?? throw new NoGeneratorConfiguredException($table, $type);
         $generatorClass = ltrim($generatorClass, '\\');
 
         if (!is_a($generatorClass, ModelGeneratorInterface::class, true)) {
@@ -30,9 +31,12 @@ class GeneratorFactory
         return GeneralUtility::makeInstance($generatorClass);
     }
 
-    public function getCommonCodeGenerator(): CommonCodeGeneratorInterface
+    public function getCommonCodeGenerator(): ?CommonCodeGeneratorInterface
     {
-        $generatorClass = $this->configuration->settings['commonCodeGenerator'] ?? EagerDtoGenerator::class;
+        $generatorClass = $this->configuration->settings['commonCodeGenerator'] ?? null;
+        if (!isset($generatorClass)) {
+            return null;
+        }
         $generatorClass = ltrim($generatorClass, '\\');
 
         if (!is_a($generatorClass, CommonCodeGeneratorInterface::class, true)) {
