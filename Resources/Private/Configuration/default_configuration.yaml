@@ -1,5 +1,5 @@
 $schema: ./configuration.schema.yaml
-targetPhpNamespace: SomeBdyElse\ContentModels\Model
+targetPhpNamespace: SomeBdyElse\Typo3ContentModels\Model
 targetDirectory: EXT:content_models/Classes/Model/Content
 overrides:
   generator: SomeBdyElse\Typo3ContentModels\Generation\Generators\EagerDtoGenerator
