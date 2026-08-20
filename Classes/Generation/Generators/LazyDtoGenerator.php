@@ -8,8 +8,9 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\Utils\Type;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
+use TYPO3\CMS\Core\Domain\Record;
 
-class EagerDtoGenerator extends AbstractDtoGenerator
+class LazyDtoGenerator extends AbstractDtoGenerator
 {
     protected function createConstructor(ClassType $model): Method
     {
@@ -17,6 +18,11 @@ class EagerDtoGenerator extends AbstractDtoGenerator
         $uidParameter = $constructor->addPromotedParameter('uid');
         $uidParameter->setPublic();
         $uidParameter->setType('int');
+
+        $recordParameter = $constructor->addPromotedParameter('record');
+        $recordParameter->setPrivate();
+        $recordParameter->setReadOnly();
+        $recordParameter->setType(Record::class);
 
         return $constructor;
     }
@@ -27,15 +33,14 @@ class EagerDtoGenerator extends AbstractDtoGenerator
         GeneratedField $generatedField,
         Type $fieldType,
     ): void {
-        $fieldName = $generatedField->name;
-        $parameter = $constructor->addPromotedParameter($fieldName);
-        $parameter->setPublic();
-        $parameter->setReadOnly();
+        $method = $model->addMethod($this->namingHelper->getterNameForField($generatedField->name));
+        $method->setPublic();
         if ($generatedField->phpDocType !== null) {
-            $parameter->setComment('@var ' . $generatedField->phpDocType . ' $' . $fieldName);
+            $method->setComment('@return ' . $generatedField->phpDocType);
         }
 
-        $parameter->setType((string)$fieldType);
+        $method->setReturnType((string)$fieldType);
+        $method->setBody("\$record = \$this->record;\nreturn {$generatedField->fromRecordExpression};");
     }
 
     /**
@@ -43,12 +48,6 @@ class EagerDtoGenerator extends AbstractDtoGenerator
      */
     protected function buildFromRecordBody(array $generatedFields): string
     {
-        $body = '$arguments = [];' . "\n";
-        $body .= "\$arguments['uid'] = \$record->get('uid');\n";
-        foreach ($generatedFields as $generatedField) {
-            $body .= "\$arguments['{$generatedField->name}'] = {$generatedField->fromRecordExpression};\n";
-        }
-
-        return $body . 'return new self(...$arguments);';
+        return "return new self(\$record->get('uid'), \$record);";
     }
 }

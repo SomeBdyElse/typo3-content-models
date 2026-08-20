@@ -31,6 +31,9 @@ services:
 
   SomeBdyElse\Typo3ContentModels\Generation\Generators\EagerDtoGenerator:
     public: true
+
+  SomeBdyElse\Typo3ContentModels\Generation\Generators\LazyDtoGenerator:
+    public: true
     
   SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand:
     public: true
