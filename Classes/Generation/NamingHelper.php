@@ -51,6 +51,11 @@ class NamingHelper
         return $this->tableNamespaceSegment($table);
     }
 
+    public function getterNameForField(string $field): string
+    {
+        return 'get' . $this->identifierSegment($field, 'Field');
+    }
+
     private function tableNamespaceSegment(string $table): string
     {
         $normalizedTable = preg_replace('/^(tt_|tx_)/', '', $table) ?? $table;
