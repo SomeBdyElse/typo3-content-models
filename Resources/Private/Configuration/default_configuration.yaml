@@ -1,9 +1,9 @@
 $schema: ./configuration.schema.yaml
 targetPhpNamespace: SomeBdyElse\ContentModels\Model
 targetDirectory: EXT:content_models/Classes/Model/Content
-commonCodeGenerator: SomeBdyElse\Typo3ContentModels\Generation\DefaultGenerator
+commonCodeGenerator: SomeBdyElse\Typo3ContentModels\Generation\EagerDtoGenerator
 overrides:
-  generator: SomeBdyElse\Typo3ContentModels\Generation\DefaultGenerator
+  generator: SomeBdyElse\Typo3ContentModels\Generation\EagerDtoGenerator
   generate: false
   tables:
     pages:
