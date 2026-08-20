@@ -2,7 +2,7 @@ $schema: ./configuration.schema.yaml
 targetPhpNamespace: SomeBdyElse\ContentModels\Model
 targetDirectory: EXT:content_models/Classes/Model/Content
 overrides:
-  generator: SomeBdyElse\Typo3ContentModels\Generation\EagerDtoGenerator
+  generator: SomeBdyElse\Typo3ContentModels\Generation\Generators\EagerDtoGenerator
   generate: false
   tables:
     pages:
