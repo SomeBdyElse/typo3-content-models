@@ -29,7 +29,7 @@ services:
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Link'
         - '@SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler\Fallback'
 
-  SomeBdyElse\Typo3ContentModels\Generation\DefaultGenerator:
+  SomeBdyElse\Typo3ContentModels\Generation\EagerDtoGenerator:
     public: true
     
   SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand:

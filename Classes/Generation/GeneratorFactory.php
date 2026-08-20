@@ -15,7 +15,7 @@ class GeneratorFactory
     public function getContentModelGenerator(string $table, ?string $type): ModelGeneratorInterface
     {
         $configuration = $this->configuration->getTableConfiguration($table, $type);
-        $generatorClass = $configuration['generator'] ?? DefaultGenerator::class;
+        $generatorClass = $configuration['generator'] ?? EagerDtoGenerator::class;
         $generatorClass = ltrim($generatorClass, '\\');
 
         if (!is_a($generatorClass, ModelGeneratorInterface::class, true)) {
@@ -32,7 +32,7 @@ class GeneratorFactory
 
     public function getCommonCodeGenerator(): CommonCodeGeneratorInterface
     {
-        $generatorClass = $this->configuration->settings['commonCodeGenerator'] ?? DefaultGenerator::class;
+        $generatorClass = $this->configuration->settings['commonCodeGenerator'] ?? EagerDtoGenerator::class;
         $generatorClass = ltrim($generatorClass, '\\');
 
         if (!is_a($generatorClass, CommonCodeGeneratorInterface::class, true)) {
