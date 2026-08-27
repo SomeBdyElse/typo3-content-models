@@ -7,7 +7,6 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Contract/ContentModel.php'
-      - '../Classes/Model'
       - '../Classes/Rendering/DependencyInjection'
 
   SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration:
