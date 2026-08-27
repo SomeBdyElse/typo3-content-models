@@ -37,10 +37,9 @@ services:
   SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand:
     public: true
 
-  SomeBdyElse\Typo3ContentModels\Rendering\PageContentWrapper:
+  SomeBdyElse\Typo3ContentModels\Rendering\ContentModelsProcessor:
     tags:
-      - name: event.listener
-        method: __invoke
+      - { name: 'data.processor', identifier: 'content-models' }
 
   SomeBdyElse\Typo3ContentModels\Rendering\PageFetchingProcessor:
     tags:
