@@ -19,12 +19,14 @@ final class ContentModelCompilerPass implements CompilerPassInterface
         }
 
         $contentModelsByTableAndType = [];
+        $contentModelServiceIds = [];
         foreach ($container->findTaggedResourceIds(ContentModel::TAG) as $serviceId => $tags) {
             $definition = $container->findDefinition($serviceId);
             $className = $definition->getClass() ?: $serviceId;
             if (!is_a($className, ContentModelInterface::class, true)) {
                 continue;
             }
+            $contentModelServiceIds[] = $serviceId;
 
             foreach ($tags as $tag) {
                 $table = $tag['table'] ?? null;
@@ -48,6 +50,12 @@ final class ContentModelCompilerPass implements CompilerPassInterface
         foreach ($contentModelsByTableAndType as $table => $contentModelsByType) {
             foreach ($contentModelsByType as $type => $className) {
                 $registryDefinition->addMethodCall('registerContentModel', [$table, $type, $className]);
+            }
+        }
+
+        foreach ($contentModelServiceIds as $serviceId) {
+            if ($container->hasDefinition($serviceId)) {
+                $container->removeDefinition($serviceId);
             }
         }
     }
