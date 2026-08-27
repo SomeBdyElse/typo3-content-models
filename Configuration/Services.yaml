@@ -41,9 +41,9 @@ services:
     tags:
       - { name: 'data.processor', identifier: 'content-models' }
 
-  SomeBdyElse\Typo3ContentModels\Rendering\PageFetchingProcessor:
+  SomeBdyElse\Typo3ContentModels\Rendering\PageModelProcessor:
     tags:
-      - { name: 'data.processor', identifier: 'page' }
+      - { name: 'data.processor', identifier: 'page-model' }
 
   SomeBdyElse\Typo3ContentModels\Contract\ContentModelFactoryInterface:
     alias: SomeBdyElse\Typo3ContentModels\Rendering\ContentModelFactory
