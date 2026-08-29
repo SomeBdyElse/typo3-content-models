@@ -9,6 +9,8 @@ use TYPO3\CMS\Core\Schema\TcaSchema;
 
 interface HandlerInterface
 {
+    public const TAG = AsFieldGenerationHandler::TAG_NAME;
+
     public function supports(FieldTypeInterface $field): bool;
 
     public function generate(

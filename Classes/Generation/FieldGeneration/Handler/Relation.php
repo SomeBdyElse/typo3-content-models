@@ -6,6 +6,7 @@ namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler;
 
 use SomeBdyElse\Typo3ContentModels\Contract\ContentModelInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\NamingHelper;
@@ -17,6 +18,10 @@ use TYPO3\CMS\Core\Schema\Field\RelationalFieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 
+#[AsFieldGenerationHandler(
+    identifier: 'somebdyelse/typo3-content-models/relation',
+    after: ['somebdyelse/typo3-content-models/file'],
+)]
 final readonly class Relation implements HandlerInterface
 {
     public function __construct(

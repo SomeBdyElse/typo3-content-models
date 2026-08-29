@@ -8,6 +8,7 @@ use Nette\PhpGenerator\Helpers;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use SomeBdyElse\Typo3ContentModels\Generation\Configuration\Configuration;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\NamingHelper;
@@ -17,6 +18,9 @@ use TYPO3\CMS\Core\Schema\TcaSchema;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
+#[AsFieldGenerationHandler(
+    identifier: 'somebdyelse/typo3-content-models/static-select-single-enum',
+)]
 final readonly class StaticSelectSingleEnum implements HandlerInterface
 {
     public function __construct(

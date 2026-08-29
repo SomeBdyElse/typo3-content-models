@@ -13,11 +13,16 @@ use Doctrine\DBAL\Types\StringType;
 use Doctrine\DBAL\Types\TextType;
 use Nette\PhpGenerator\Type;
 use SomeBdyElse\Typo3ContentModels\Generation\DatabaseSchema\DatabaseSchemaProviderInterface;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 
+#[AsFieldGenerationHandler(
+    identifier: 'somebdyelse/typo3-content-models/fallback',
+    after: ['*'],
+)]
 final readonly class Fallback implements HandlerInterface
 {
     public function __construct(

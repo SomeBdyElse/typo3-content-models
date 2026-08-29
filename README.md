@@ -235,6 +235,30 @@ The built-in field generation handles common TYPO3 field types:
 
 System fields and fields with TCA type `none` are skipped.
 
+### Custom field generation handlers
+
+Custom field generation handlers can be registered by implementing:
+
+```php
+SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface
+```
+
+Add the `AsFieldGenerationHandler` attribute to make the handler available during model generation:
+
+```php
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
+
+#[AsFieldGenerationHandler(
+    identifier: 'vendor/sitepackage/my-field-handler',
+    before: ['somebdyelse/typo3-content-models/fallback'],
+)]
+final readonly class MyFieldHandler implements HandlerInterface
+{
+    // ...
+}
+```
+
 ## Extending model generation
 
 Create a generator that implements:

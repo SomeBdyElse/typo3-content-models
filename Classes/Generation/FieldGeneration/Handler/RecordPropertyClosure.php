@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler;
 
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use TYPO3\CMS\Core\DataHandling\TableColumnType;
@@ -11,6 +12,9 @@ use TYPO3\CMS\Core\Domain\RecordPropertyClosure as Typo3RecordPropertyClosure;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 
+#[AsFieldGenerationHandler(
+    identifier: 'somebdyelse/typo3-content-models/record-property-closure',
+)]
 final readonly class RecordPropertyClosure implements HandlerInterface
 {
     public function supports(FieldTypeInterface $field): bool

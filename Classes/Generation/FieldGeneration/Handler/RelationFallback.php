@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\Handler;
 
+use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\AsFieldGenerationHandler;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\GeneratedField;
 use SomeBdyElse\Typo3ContentModels\Generation\FieldGeneration\HandlerInterface;
 use SomeBdyElse\Typo3ContentModels\Rendering\LazyContentModelCollection;
@@ -13,6 +14,13 @@ use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\Field\RelationalFieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
 
+#[AsFieldGenerationHandler(
+    identifier: 'somebdyelse/typo3-content-models/relation-fallback',
+    after: [
+        'somebdyelse/typo3-content-models/file',
+        'somebdyelse/typo3-content-models/relation',
+    ],
+)]
 final readonly class RelationFallback implements HandlerInterface
 {
     public function supports(FieldTypeInterface $field): bool
