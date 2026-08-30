@@ -1,0 +1,7 @@
+"pages"
+,"uid","pid","title","doktype","slug","is_siteroot","hidden","deleted"
+,1,0,"Root",1,"/",1,0,0
+,2,1,"Processor Probe",1,"/processor-probe",0,0,0
+"tt_content"
+,"uid","pid","CType","colPos","header","bodytext","sorting","hidden","deleted","sys_language_uid"
+,10,2,"processor_probe",0,"Processor Probe Content","Processor probe body",256,0,0,0
