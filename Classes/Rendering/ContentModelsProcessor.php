@@ -4,15 +4,18 @@ declare(strict_types=1);
 
 namespace SomeBdyElse\Typo3ContentModels\Rendering;
 
-use TYPO3\CMS\Core\Domain\Record;
-use TYPO3\CMS\Core\Page\ContentAreaCollection;
+use SomeBdyElse\Typo3ContentModels\Rendering\ContentModelsProcessor\ContentAreaCollectionProcessor;
+use SomeBdyElse\Typo3ContentModels\Rendering\ContentModelsProcessor\ContentArrayProcessor;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 use TYPO3\CMS\Frontend\ContentObject\DataProcessorInterface;
 
 class ContentModelsProcessor implements DataProcessorInterface
 {
+    private const CONTENT_AREA_COLLECTION_CLASS = 'TYPO3\\CMS\\Core\\Page\\ContentAreaCollection';
+
     public function __construct(
-        protected ContentConverter $contentConverter,
+        protected ContentArrayProcessor $contentArrayProcessor,
+        protected ContentAreaCollectionProcessor $contentAreaCollectionProcessor,
     ) {
     }
 
@@ -30,26 +33,18 @@ class ContentModelsProcessor implements DataProcessorInterface
         $targetVariableName = $cObj->stdWrapValue('as', $processorConfiguration, $sourceVariableName);
 
         $contentAreas = $processedData[$sourceVariableName] ?? null;
-        if (!$contentAreas instanceof ContentAreaCollection) {
-            return $processedData;
+        if (! (is_array($contentAreas) || is_a($contentAreas, self::CONTENT_AREA_COLLECTION_CLASS))) {
+            throw new \InvalidArgumentException(sprintf(
+                'Expected processed data "%s" to contain an array or %s, got %s.',
+                $sourceVariableName,
+                self::CONTENT_AREA_COLLECTION_CLASS,
+                get_debug_type($contentAreas),
+            ), 1764508392);
         }
 
-        $groupedContent = [];
-        foreach ($contentAreas as $identifier => $contentArea) {
-            $records = [];
-            foreach ($contentArea->getRecords() as $contentIndex => $content) {
-                $records[$contentIndex] = $content instanceof Record
-                    ? $this->contentConverter->convert($cObj->getRequest(), $content)
-                    : $content;
-            }
-
-            $groupedContent[$identifier] = [
-                'area' => $contentArea,
-                'records' => $records,
-            ];
-        }
-
-        $processedData[$targetVariableName] = $contentAreas->withUpdatedRecords($groupedContent);
+        $processedData[$targetVariableName] = is_array($contentAreas)
+            ? $this->contentArrayProcessor->process($cObj, $contentAreas)
+            : $this->contentAreaCollectionProcessor->process($cObj, $contentAreas);
 
         return $processedData;
     }

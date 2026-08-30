@@ -106,7 +106,7 @@ jobs:
           path: .Build
 
       - name: Run PHPStan
-        run: php .Build/bin/phpstan analyse --configuration=Build/phpstan/phpstan.neon --memory-limit=1G --no-progress
+        run: php .Build/bin/phpstan analyse --configuration=Build/phpstan/phpstan-v${{ matrix.typo3-version }}.neon --memory-limit=1G --no-progress
 
   functional-tests:
     name: Functional tests with TYPO3 ${{ matrix.typo3-version }}
