@@ -1,0 +1,16 @@
+page = PAGE
+page {
+  typeNum = 0
+
+  10 = PAGEVIEW
+  10 {
+    paths {
+      10 = EXT:content_models/Tests/Rendering/Functional/Fixtures/Templates/
+    }
+
+    dataProcessing {
+      10 = page-content
+      20 = content-models
+    }
+  }
+}

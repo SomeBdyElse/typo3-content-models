@@ -1,0 +1,14 @@
+{
+  "name": "somebdyelse/content-models-processor-test",
+  "type": "typo3-cms-extension",
+  "autoload": {
+    "psr-4": {
+      "SomeBdyElse\\Typo3ContentModelsProcessorTest\\": "Classes/"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "content_models_processor_test"
+    }
+  }
+}
