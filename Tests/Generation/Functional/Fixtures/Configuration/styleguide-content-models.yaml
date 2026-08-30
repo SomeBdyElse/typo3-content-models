@@ -1,0 +1,6 @@
+$schema: ../../../../../Resources/Private/Configuration/configuration.schema.yaml
+targetPhpNamespace: SomeBdyElse\Typo3ContentModels\Tests\Generation\Functional\Generated\Styleguide
+targetDirectory: "%env(CONTENT_MODELS_TEST_TARGET_DIRECTORY)%"
+overrides:
+  generator: SomeBdyElse\Typo3ContentModels\Generation\Generators\EagerDtoGenerator
+  generate: true

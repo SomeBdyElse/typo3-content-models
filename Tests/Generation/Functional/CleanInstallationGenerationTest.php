@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SomeBdyElse\Typo3ContentModels\Tests\Functional\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Tests\Generation\Functional;
 
 use PHPUnit\Framework\Attributes\Test;
 

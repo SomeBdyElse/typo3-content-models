@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SomeBdyElse\Typo3ContentModels\Tests\Functional\Generation;
+namespace SomeBdyElse\Typo3ContentModels\Tests\Generation\Functional;
 
 use SomeBdyElse\Typo3ContentModels\Generation\GenerateModelsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -82,7 +82,7 @@ abstract class AbstractContentModelGenerationTestCase extends FunctionalTestCase
         $systemConfigPath = Environment::getConfigPath() . '/system';
         GeneralUtility::mkdir_deep($systemConfigPath);
 
-        $sourceFile = dirname(__DIR__) . '/Fixtures/Configuration/' . $fixtureFileName;
+        $sourceFile = __DIR__ . '/Fixtures/Configuration/' . $fixtureFileName;
         self::assertFileExists($sourceFile);
         self::assertTrue(
             copy($sourceFile, $systemConfigPath . '/content_models.yaml'),

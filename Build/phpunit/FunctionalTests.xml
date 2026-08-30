@@ -15,7 +15,7 @@
 >
     <testsuites>
         <testsuite name="Functional tests">
-            <directory suffix="Test.php">../../Tests/Functional</directory>
+            <directory suffix="Test.php">../../Tests/Generation/Functional</directory>
         </testsuite>
     </testsuites>
     <php>
