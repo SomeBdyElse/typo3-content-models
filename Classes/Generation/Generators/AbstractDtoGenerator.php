@@ -18,7 +18,6 @@ use SomeBdyElse\Typo3ContentModels\Generation\GeneratedModel;
 use SomeBdyElse\Typo3ContentModels\Generation\ModelGeneratorInterface;
 use SomeBdyElse\Typo3ContentModels\Generation\NamingHelper;
 use TYPO3\CMS\Core\Domain\Record;
-use TYPO3\CMS\Core\Schema\Capability\LanguageAwareSchemaCapability;
 use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\Field\FieldTypeInterface;
 use TYPO3\CMS\Core\Schema\TcaSchema;
@@ -139,17 +138,11 @@ abstract class AbstractDtoGenerator implements ModelGeneratorInterface
             $systemFields[] = $languageCapability->hasTranslationSourceField() ? $languageCapability->getTranslationSourceField()->getName() : '';
         }
         foreach (TcaSchemaCapability::getSystemCapabilities() as $capability) {
-            try {
-                $capability = $tableSchema->getCapability($capability);
-            } catch (\Throwable) {
+            if (!$tableSchema->hasCapability($capability)) {
                 continue;
             }
 
-            if ($capability instanceof LanguageAwareSchemaCapability) {
-                $systemFields[] = $capability->getLanguageField();
-                $systemFields[] = $capability->getTranslationSourceField();
-            }
-            $systemFields[] = $capability->getFieldName();
+            $systemFields[] = $tableSchema->getCapability($capability)->getFieldName();
         }
 
         return in_array($field->getName(), $systemFields);
